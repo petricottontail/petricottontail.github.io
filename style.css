@@ -7,7 +7,10 @@
 	Name       : Eponymous
 	Version    : 1.0
 	Released   : 20130222
-	
+
+	Modified   : responsive + motion pass, 2026-10-30
+	             (layout/behavior only — no content changes)
+
 */
 
 * {
@@ -15,9 +18,14 @@
 	padding: 0;
 }
 
+html {
+	scroll-behavior: smooth;
+}
+
 a {
 	color: #d43535;
 	text-decoration: underline;
+	transition: color 0.2s ease, text-decoration-color 0.2s ease;
 }
 
 a:hover {
@@ -79,7 +87,7 @@ ul {
 .imageList li {
 	clear: both;
 }
-	
+
 #bg {
 	background: url('images/shadow.png') top left repeat-x;
 	padding: 60px 0 80px 0;
@@ -87,10 +95,17 @@ ul {
 
 #banner {
 	position: relative;
-	height: 200px;
-	width: 1120px;
+	height: auto;
+	width: auto;
+	max-width: 1120px;
 	padding-left: 30px;
 	margin: 0px 0 0 0;
+}
+
+#banner img {
+	width: 100%;
+	height: auto;
+	display: block;
 }
 
 #box {
@@ -100,8 +115,9 @@ ul {
 
 
 #content {
-	width: 1060px;
-	margin: 0px 0 0 30px;	
+	width: auto;
+	max-width: 1060px;
+	margin: 0px 30px 0 30px;
 	padding: 30px;
 	background: #ffffff;
 }
@@ -109,7 +125,8 @@ ul {
 #copyright {
 	position: relative;
 	text-align: center;
-	width: 1120px;
+	width: auto;
+	max-width: 1120px;
 	color: #707070;
 	font-size: 0.9em;
 }
@@ -121,7 +138,8 @@ ul {
 #footer {
 	position: relative;
 	text-align: center;
-	width: 1120px;
+	width: auto;
+	max-width: 1120px;
 	color: #181ec9;
 	padding-left: 30px;
 	background: #3ca9cd;
@@ -139,7 +157,8 @@ ul {
 	position: relative;
 	padding: 10px;
 	height: 80px;
-	width: 1120px;
+	width: auto;
+	max-width: 1120px;
 }
 
 #logo {
@@ -165,7 +184,8 @@ ul {
 	position: relative;
 	padding: 0px;
 	margin: 30px 0 0 0;
-	width: 1180px;
+	width: 100%;
+	max-width: 1180px;
 	color: #6b6b6b;
 }
 
@@ -212,24 +232,35 @@ ul {
 	float: left;
 	margin: 0 0.5em 0 0.5em;
 	padding: 0.25em 1.1em 0.25em 1.1em;
+	transition: background 0.2s ease;
 }
 
 #nav ul li.active {
 	background: #3CA9CD;
 }
 
+#nav ul li:hover {
+	background: #2b7f9c;
+}
+
 #nav li a {
 	text-decoration: none;
 	color: #d9dada;
+	transition: color 0.2s ease;
+}
+
+#nav ul li:hover a {
+	color: #ffffff;
 }
 
 #nav ul li.active a {
 	color: #ffffff;
 }
-	
+
 #outer {
 	position: relative;
-	width: 1180px;
+	width: 100%;
+	max-width: 1180px;
 	margin: 0 auto;
 }
 
@@ -273,4 +304,190 @@ ul {
 #sidebar ul li.first {
 	padding-top: 0;
 	border-top: 0;
+}
+
+
+/* ------------------------------------------------------------------
+   Added 2026-10-30 — motion, image polish, responsive behavior.
+   Nothing below changes page content, only how it is presented.
+   ------------------------------------------------------------------ */
+
+/* Keep images inside their column no matter what the inline width= says */
+#main img {
+	max-width: 100%;
+}
+
+/* Hover lift on the inline figures */
+#main img.left,
+#main img.right {
+	transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+#main img.left:hover,
+#main img.right:hover {
+	transform: scale(1.03);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* Section headings pick up the accent color on hover */
+#box h3 {
+	transition: color 0.2s ease;
+}
+
+#box h3:hover {
+	color: #3CA9CD;
+}
+
+/* Replaces the align="right" attribute on the "~To Top~" links */
+.toTop {
+	text-align: right;
+}
+
+/* Three-up photo row (used under the Lolliland paragraph) */
+.photorow {
+	overflow: hidden;
+	margin: 20px 0;
+}
+
+.photorow img {
+	float: left;
+	width: 31.3%;
+	height: auto;
+	margin-right: 3%;
+	border: none;
+	transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.photorow img:last-child {
+	margin-right: 0;
+}
+
+/* Two-up variant */
+.photorow-2 img {
+	width: 48.5%;
+	margin-right: 3%;
+}
+
+.photorow img:hover {
+	transform: scale(1.03);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* Scroll reveal. The .reveal class is applied by JS, so with JS disabled
+   the content simply renders normally and is never hidden. */
+.reveal {
+	opacity: 0;
+	transform: translateY(20px);
+	transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+	opacity: 1;
+	transform: none;
+}
+
+/* Respect users who have asked for less motion */
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
+	.reveal,
+	.reveal.visible {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+
+	#main img.left:hover,
+	#main img.right:hover,
+	.photorow img:hover {
+		transform: none;
+	}
+}
+
+/* Tablet / small laptop */
+@media screen and (max-width: 1000px) {
+	#nav {
+		font-size: 1em;
+	}
+
+	#logo h1 {
+		font-size: 2.2em;
+	}
+}
+
+/* Phone */
+@media screen and (max-width: 768px) {
+	#bg {
+		padding: 20px 0 40px 0;
+	}
+
+	#header {
+		height: auto;
+		padding: 10px 0;
+		text-align: center;
+	}
+
+	#logo {
+		position: static;
+		height: auto;
+		line-height: 1.3;
+		letter-spacing: 0;
+	}
+
+	#logo h1 {
+		font-size: 1.8em;
+	}
+
+	#nav {
+		position: static;
+		height: auto;
+		margin-top: 10px;
+	}
+
+	#nav ul {
+		text-align: center;
+	}
+
+	#nav ul li {
+		float: none;
+		display: inline-block;
+		margin: 0.25em;
+	}
+
+	#banner {
+		padding-left: 0;
+	}
+
+	#main {
+		margin-top: 15px;
+	}
+
+	#content {
+		margin: 0 10px;
+		padding: 15px;
+	}
+
+	#footer {
+		padding-left: 0;
+	}
+
+	/* Inline width= attributes on the images beat normal CSS, so these
+	   need !important to unfloat and full-width them on a narrow screen. */
+	#main img.left,
+	#main img.right {
+		float: none !important;
+		display: block;
+		width: 100% !important;
+		max-width: 420px;
+		height: auto !important;
+		margin: 1em auto;
+	}
+
+	.photorow img {
+		float: none;
+		width: 100%;
+		margin: 0 0 12px 0;
+	}
 }
